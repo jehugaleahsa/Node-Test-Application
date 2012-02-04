@@ -1,16 +1,11 @@
 // manages the configuration for the current environment
 function ConfigurationManager(application) {
-    var environments = { 
-        'dev': development,
-        'prod': production
-    };
     
     // configures the application for the given environment
-    // build: the environment to configure
-    this.configure = function(build) {
-        // grab the environment by name, or development by default
-        var environment = environments[build] || development;
-        application.configure(function() { environment(application) });
+    this.configure = function() {
+        application.configure(function() { shared(application) });
+        application.configure('production', function() { production(application) });
+        application.configure('development', function() { development(application) });
     }
 }
 
@@ -26,14 +21,12 @@ function shared(application) {
 // application: the application being configured
 function development(application) {
     console.log('Configuring Node for development');
-    shared(application);
 }
 
 // configures the application for the production environment
 // application: the application being configured
 function production(application) {
     console.log('Configuring Node for production');
-    shared(application);
 }
 
 exports.ConfigurationManager = ConfigurationManager;
