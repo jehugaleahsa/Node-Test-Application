@@ -1,10 +1,10 @@
 function index(request, response) {
-	var options = {
-		layout: false,
+    var options = {
+        layout: false,
         name: '',
         post: false
-	};
-	response.render('home/index', options);
+    };
+    response.render('home/index', options);
 }
 exports.index = index;
 

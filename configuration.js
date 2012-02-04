@@ -7,11 +7,11 @@ function ConfigurationManager(application) {
     
     // configures the application for the given environment
     // build: the environment to configure
-	this.configure = function(build) {
+    this.configure = function(build) {
         // grab the environment by name, or development by default
         var environment = environments[build] || development;
         application.configure(environment);
-	}
+    }
     
     // holds the configuration settings shared across environments
     function shared() {
