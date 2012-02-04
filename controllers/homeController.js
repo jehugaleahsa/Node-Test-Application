@@ -1,8 +1,9 @@
+// when the user navigates to the home page,
+// they should be shown all of the current users
 function index(request, response) {
     var options = {
         layout: false,
-        name: '',
-        post: false
+        locals: { name: '', post: false }
     };
     response.render('home/index', options);
 }
@@ -11,8 +12,7 @@ exports.index = index;
 function indexPost(request, response) {
     var options = {
         layout: false,
-        name: request.param('name'),
-        post: true
+        locals: { name: request.param('name'), post: true }
     };
     response.render('home/index', options);
 }
