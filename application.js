@@ -9,7 +9,7 @@ var application = express.createServer();
 // configure the environment
 var configuration = require('./configuration');
 var manager = new configuration.ConfigurationManager(application);
-manager.configure();
+var settings = manager.configure();
 
 // configure the routes
 var routing = require('./routing');
@@ -21,7 +21,12 @@ application.listen(3000);
 
 // trying a mongo query
 var mongo = require('mongodb');
-var mongoServer = new mongo.Server("127.0.0.1", 27017, {});
+var mongoHost = settings['Mongo Host'];
+var mongoPort = settings['Mongo Port'];
+var mongoOptions = settings['Mongo Server Options'];
+console.log(mongoHost);
+console.log(mongoPort);
+var mongoServer = new mongo.Server(mongoHost, mongoPort, mongoOptions);
 var client = new mongo.Db('test', mongoServer);
 var async = require('async');
 async.waterfall([
