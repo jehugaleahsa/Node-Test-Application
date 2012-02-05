@@ -3,9 +3,6 @@ html
     head
         title Hello, World!!!
     body
-        form(method='post', action='/home/index')
-            - if (post)
-              | Hello, #{name}!!!
-            - else
-              input(type='text', name='name')
-              input(type='submit', value='Submit')
+        h1 Users
+        each user in users
+            li= user.name

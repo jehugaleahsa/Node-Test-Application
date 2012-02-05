@@ -9,12 +9,20 @@ function MongoServer(settings) {
     var mongoOptions = settings['Mongo Server Options'];
     var mongoServer = new mongo.Server(mongoHost, mongoPort, mongoOptions);
 
+    var proxies = {};
     var databases = {};
     
     // opens the database with the given name
     // name: the name of the database
     this.database = function(name) {
-        return new MongoDatabase(this, name);
+        var proxy = null;
+        if (name in proxies) {
+            proxy = proxies[name];
+        } else {
+            proxy = new MongoDatabase(this, name);
+            proxies[name] = proxy;
+        }
+        return proxy;
     }
     
     this._open = function(databaseName, callback) {
@@ -45,12 +53,20 @@ function MongoServer(settings) {
 }
 
 function MongoDatabase(server, name) {
+    var proxies = {};
     var collections = {};
     
     // open the collection with the given name
     // name: the name of the collection to open
     this.collection = function(name) {
-        return new MongoCollection(this, name);
+        var collection = null;
+        if (name in proxies) {
+            collection = proxies[name];
+        } else {
+            collection = new MongoCollection(this, name);
+            proxies[name] = collection;
+        }
+        return collection;
     }
     
     // closes the database
