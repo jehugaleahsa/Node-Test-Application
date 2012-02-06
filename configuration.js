@@ -19,6 +19,7 @@ function shared(application, settings) {
     var express = require('express');
     application.use(express.bodyParser());
     application.set('view engine', 'jade');
+    application.use(express.static(__dirname + '/public'));
 }
 
 // configures the application for the development environment
@@ -26,6 +27,8 @@ function shared(application, settings) {
 // settings: a collection to store environment settings
 function development(application, settings) {
     console.log('Configuring Node for development');
+    var express = require('express');
+    application.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
     settings['Mongo Host'] = '127.0.0.1';
     settings['Mongo Port'] = 27017;
     settings['Mongo Server Options'] = {};
@@ -38,6 +41,8 @@ function development(application, settings) {
 // settings: a collection to store environment settings
 function production(application, settings) {
     console.log('Configuring Node for production');
+    var express = require('express');
+    application.use(express.errorHandler());
 }
 
 exports.ConfigurationManager = ConfigurationManager;
