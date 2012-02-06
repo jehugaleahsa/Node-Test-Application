@@ -1,0 +1,20 @@
+!!! 5
+html
+    head
+        title Remove User?
+        link(rel='stylesheet/less', href='/bootstrap/less/bootstrap.less')
+        script(src='/js/less.min.js')
+    body
+        div.container
+            form(method='post', action='/home/remove')
+                input(type='hidden', name='id', value='#{user.name}')
+                .row
+                    .span4 &nbsp;
+                    .span4 Are you sure you want to remove #{user.name}?
+                    .span4
+                .row
+                    .span4 &nbsp;
+                    .span4.btn-group
+                        input.btn.btn-warning(type='submit', value='Yes')
+                        a.btn(href='/home/index') No
+                    .span4

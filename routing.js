@@ -15,6 +15,7 @@ function registerHome(application, mongoServer) {
     var controller = new homeController.HomeController(dependencies);
     application.get('/', controller.index);
     application.get('/home/index', controller.index);
+    application.get('/home/remove/:id', controller.remove);
 }
 
 exports.Router = Router;

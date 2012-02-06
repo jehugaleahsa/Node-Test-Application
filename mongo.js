@@ -25,6 +25,11 @@ function MongoServer(settings) {
         return proxy;
     }
     
+    this.objectId = function(id) {
+        var objectId = new mongo.ObjectID(id);
+        return objectId;
+    }
+    
     this._open = function(databaseName, callback) {
         if (databaseName in databases) {
             // grab a cached database
