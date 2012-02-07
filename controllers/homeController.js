@@ -86,6 +86,24 @@ function HomeController(dependencies) {
                 }
             });
     }
+    
+    // when the user wants to create a new user,
+    // they should be prompted to provide information
+    this.create = function(request, response) {
+        var async = require('async');
+        async.waterfall([
+            function (callback) {
+                var options = {
+                    layout: null,
+                    locals: null
+                };
+                response.render('home/create', options);
+                callback(null);
+            }
+            ],
+            function (error) {
+            });
+    }
 }
 exports.HomeController = HomeController;
 

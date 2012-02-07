@@ -1,0 +1,27 @@
+!!! 5
+html
+    head
+        title Create User
+        link(rel='stylesheet/less', href='/bootstrap/less/bootstrap.less')
+        link(rel='stylesheet', type='text/css', href='/css/main.css')
+        script(type='text/javascript', src='/js/less.min.js')
+        script(type='text/javascript', src='/js/jquery-1.7.1.min.js')
+        script(type='text/javascript', src='/js/jquery.validate.min.js')
+        script(type='text/javascript', src='/js/main.js')
+    body
+        div.container
+            form.create-user-frm.form-vertical(method='post', action='/home/create')
+                .row
+                    .span4 &nbsp;
+                    h1.span8 Enter the user information
+                .row
+                    .span4 &nbsp;
+                    .span4
+                        .create-user-name.control-group
+                            label.create-user-name-lbl.control-label(for='name') User Name
+                            input.create-user-name-txt.input(type='text', name='name')
+                        .form-actions
+                            button.create-user-btn.btn.btn-primary Create
+                            | &nbsp;
+                            a.btn(href='/home/index') Cancel
+                    .span4

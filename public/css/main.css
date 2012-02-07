@@ -1,0 +1,13 @@
+div.error {
+    color: #b94a48;
+}
+div.success {
+    color: #468847;
+}
+input.btn {
+    vertical-align: baseline;
+    height: 28px;
+}
+button.btn {
+    vertical-align: baseline;
+}
