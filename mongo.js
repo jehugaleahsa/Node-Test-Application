@@ -131,6 +131,24 @@ function MongoCollection(database, name) {
                 callback(error, result);
             });
     }
+
+    // removes the documents satisfying the given condition
+    // condition: the condition that the documents must satify in order to be removed
+    // callback(error): the callback to pass the errors to
+    this.remove = function(condition, callback) {
+        async.waterfall([
+            // retrieve the collection
+            function (callback) { database._open(name, callback); },
+            // retrieve the documents
+            function (collection, callback) {
+                var cursor = collection.remove(condition, callback);
+            }
+            ],
+            // call the callback, passing any errors
+            function (error) {
+                callback(error);
+            });
+    }
 }
 
 exports.MongoServer = MongoServer;

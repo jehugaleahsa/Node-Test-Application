@@ -7,7 +7,7 @@ html
     body
         div.container
             form(method='post', action='/home/remove')
-                input(type='hidden', name='id', value='#{user.name}')
+                input(type='hidden', name='id', value='#{user._id}')
                 .row
                     .span4 &nbsp;
                     .span4 Are you sure you want to remove #{user.name}?

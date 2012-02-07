@@ -60,6 +60,32 @@ function HomeController(dependencies) {
                 }
             });
     }
+
+    // when the user confirms that they want to remove a user,
+    // the user should be removed from the data store
+    // and the user should be redirected to the index screen
+    this.removePost = function(request, response) {
+        var userId = request.body.id;
+        var async = require('async');
+        async.waterfall([
+            // remove the user from the data store
+            function (callback) {
+                var managers = require('../management/home/remove.js');
+                var manager = new managers.Manager(dependencies);
+                manager.removeUser(userId, callback);
+            },
+            // redirect the user to the index
+            function (callback) { 
+                response.redirect('/home/index');
+                callback(null);
+            }
+            ],
+            function (error) {
+                if (error) {
+                    // indicate that an error occurred
+                }
+            });
+    }
 }
 exports.HomeController = HomeController;
 

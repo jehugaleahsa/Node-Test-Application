@@ -16,6 +16,7 @@ function registerHome(application, mongoServer) {
     application.get('/', controller.index);
     application.get('/home/index', controller.index);
     application.get('/home/remove/:id', controller.remove);
+    application.post('/home/remove', controller.removePost);
 }
 
 exports.Router = Router;
