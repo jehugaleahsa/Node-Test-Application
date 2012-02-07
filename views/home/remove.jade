@@ -3,18 +3,20 @@ html
     head
         title Remove User?
         link(rel='stylesheet/less', href='/bootstrap/less/bootstrap.less')
+        link(rel='stylesheet', type='text/css', href='/css/main.css')
         script(src='/js/less.min.js')
     body
         div.container
-            form(method='post', action='/home/remove')
+            form.form-vertical(method='post', action='/home/remove')
                 input(type='hidden', name='id', value='#{user._id}')
                 .row
-                    .span4 &nbsp;
-                    .span4 Are you sure you want to remove #{user.name}?
-                    .span4
+                    .span3 &nbsp;
+                    .confirm.span6 Are you sure you want to remove #{user.name}?
+                    .span3
                 .row
-                    .span4 &nbsp;
-                    .span4.btn-group
-                        input.btn.btn-warning(type='submit', value='Yes')
+                    .span3 &nbsp;
+                    .span6.form-actions
+                        button.btn.btn-warning Yes
+                        | 
                         a.btn(href='/home/index') No
-                    .span4
+                    .span3

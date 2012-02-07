@@ -11,3 +11,7 @@ input.btn {
 button.btn {
     vertical-align: baseline;
 }
+.confirm {
+    font-weight: bold;
+    font-size: 20px;
+}
