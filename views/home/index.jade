@@ -1,26 +1,19 @@
-!!! 5
-html
-    head
-        title Users
-        link(rel='stylesheet/less', href='/bootstrap/less/bootstrap.less')
-        script(src='/js/less.min.js')
-    body
-        div.container
-            h1 Users
-            .row
-                table.table-striped.table-bordered.span12
-                    thead
-                        tr
-                            th Name
-                            th
-                            th
-                    tbody
-                    each user in users
-                        tr
-                            td= user.name
-                            td 
-                                a(href='/home/edit/#{user._id}') Edit
-                            td 
-                                a(href='/home/remove/#{user._id}') Remove
-            .row
-                a.span12(href='/home/create') Create User
+.container
+    h1 Users
+    .row
+        table.table-striped.table-bordered.span12
+            thead
+                tr
+                    th Name
+                    th
+                    th
+            tbody
+            each user in users
+                tr
+                    td= user.name
+                    td 
+                        a(href='/home/edit/#{user._id}') Edit
+                    td 
+                        a(href='/home/remove/#{user._id}') Remove
+    .row
+        a.span12(href='/home/create') Create User

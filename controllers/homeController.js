@@ -14,7 +14,7 @@ function HomeController(dependencies) {
             // render the view
             function (users, callback) {
                 var options = {
-                    layout: false,
+                    layout: 'layout',
                     locals: { users : users }
                 };
                 response.render('home/index', options);
@@ -46,7 +46,7 @@ function HomeController(dependencies) {
                         callback('More the one user was found with the given ID.');
                     } else {
                         var options = {
-                            layout: false,
+                            layout: 'layout',
                             locals: { user : users[0] }
                         };
                         response.render('home/remove', options);
@@ -94,7 +94,7 @@ function HomeController(dependencies) {
         async.waterfall([
             function (callback) {
                 var options = {
-                    layout: null,
+                    layout: 'layout',
                     locals: null
                 };
                 response.render('home/create', options);
