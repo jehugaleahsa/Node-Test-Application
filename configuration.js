@@ -19,8 +19,8 @@ function shared(application, settings) {
     var express = require('express');
     application.use(express.bodyParser());
     application.set('view engine', 'jade');
-    application.use(express.static(__dirname + '/public'));
     application.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }));
+    application.use(express.static(__dirname + '/public'));
 }
 
 // configures the application for the development environment

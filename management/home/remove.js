@@ -10,4 +10,5 @@ function Manager(dependencies) {
         collection.remove({_id: server.objectId(userId)}, callback);
     }
 }
+
 exports.Manager = Manager;

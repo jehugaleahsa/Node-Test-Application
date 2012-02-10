@@ -3,7 +3,9 @@ function IndexBuilder(dependencies) {
         var server = dependencies.mongo;
         var database = server.database('test');
         var collection = database.collection('user');
-        collection.find({}, callback);
+        var filter = {};
+        var sort = { name: 'asc' };
+        collection.find(filter, sort, callback);
     }
 }
 

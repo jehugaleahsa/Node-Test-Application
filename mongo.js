@@ -110,14 +110,20 @@ function MongoCollection(database, name) {
     // finds the documents satisifying the given condition, passing them to the given callback
     // condition: the condition that the documents must satisfy
     // callback(error, documents): the callback to pass the errors and returned documents to
-    this.find = function(condition, callback) {
+    this.find = function(condition, sort, callback) {
+        if (typeof callback === 'undefined') {
+            callback = sort;
+            sort = {};
+        }
         var result = null;
         async.waterfall([
             // retrieve the collection
             function (callback) { database._open(name, callback); },
             // retrieve the documents
             function (collection, callback) {
-                var cursor = collection.find(condition);
+                var sortOptions = getSortOptions(sort);
+                var options = { sort: sortOptions };
+                var cursor = collection.find(condition, options);
                 cursor.toArray(callback);
             },
             // store the documents as the result
@@ -130,6 +136,74 @@ function MongoCollection(database, name) {
             function (error) {
                 callback(error, result);
             });
+    }
+    
+    function getSortOptions(sort) {
+        var sortOptions = [];
+        for (var field in sort) {
+            var sortOption = [field, sort[field]];
+            sortOptions.push(sortOption);
+        }
+        return sortOptions;
+    }
+    
+    // inserts the given document
+    this.insert = function(document, callback) {
+        var inserted = null;
+        async.waterfall([
+            // retrieve the collection
+            function (callback) { database._open(name, callback); },
+            // retrieve the documents
+            function (collection, callback) {
+                var options = { safe: true };
+                collection.insert(document, options, callback);
+            },
+            // grab the inserted document
+            function (documents, callback) {
+                inserted = documents[0];
+                callback(null);
+            }
+            ],
+            // call the callback, passing any errors
+            function (error) {
+                callback(error, inserted);
+            });
+    }
+    
+    // updates the documents satisfying the condition by replacing it
+    // replacement: the object to replace the matching documents with, including its _id field.
+    // callback(error): the callback to pass the errors to
+    this.update = function(replacement, callback) {
+        var affected = 0;
+        async.waterfall([
+            // open the collection
+            function (callback) { database._open(name, callback); },
+            // update the document
+            function (collection, callback) {
+                var condition = { _id: new mongo.ObjectID(replacement._id) };
+                // clone the document, except the _id
+                var document = minus(replacement, { _id: 0 });
+                var options = { safe: true, multi: false, upsert: false };
+                collection.update(condition, document, options, callback);
+            },
+            function (count, callback) {
+                affected = count;
+                callback(null);
+            }
+            ],
+            function (error) {
+                callback(error, affected);
+            });
+    }
+    
+    function minus(document, exclude) {
+        var result = {};
+        for (var key in document) {
+            if (!(key in exclude)) {
+                result[key] = document[key];
+            }
+        }
+        return result;
     }
 
     // removes the documents satisfying the given condition
