@@ -4,7 +4,7 @@ var async = require('async');
 function HomeController(dependencies) {
     // when the user navigates to the home page,
     // they should be shown all of the current users
-    this.index = function(request, response) {
+    this.index = function(request, response, next) {
         async.waterfall([
             // build the view model
             function (callback) { 
@@ -15,7 +15,6 @@ function HomeController(dependencies) {
             // render the view
             function (users, callback) {
                 var options = {
-                    layout: 'layout',
                     locals: { users : users }
                 };
                 response.render('home/index', options);
@@ -23,15 +22,13 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
-                if (error) {
-                    // indicate that an error occurred
-                }
+                next(error);
             });
     }
     
     // when the user wants to remove a user,
     // they should be prompted to confirm their decision
-    this.remove = function(request, response) {
+    this.remove = function(request, response, next) {
         async.waterfall([
             // build the view model
             function (callback) {
@@ -46,7 +43,6 @@ function HomeController(dependencies) {
                     return callback('More the one user was found with the given ID.');
                 }
                 var options = {
-                    layout: 'layout',
                     locals: { user: users[0] }
                 };
                 response.render('home/remove', options);
@@ -54,16 +50,14 @@ function HomeController(dependencies) {
             }
         ],
         function (error) {
-            if (error) {
-                // indicate that an error occurred
-            }
+            next(error);
         });
     }
 
     // when the user confirms that they want to remove a user,
     // the user should be removed from the data store
     // and the user should be redirected to the index screen
-    this.removePost = function(request, response) {
+    this.removePost = function(request, response, next) {
         async.waterfall([
             // remove the user from the data store
             function (callback) {
@@ -79,19 +73,16 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
-                if (error) {
-                    // indicate that an error occurred
-                }
+                next(error);
             });
     }
     
     // when the user wants to create a new user,
     // they should be prompted to provide information
-    this.create = function(request, response) {
+    this.create = function(request, response, next) {
         async.waterfall([
             function (callback) {
                 var options = {
-                    layout: 'layout',
                     locals: null
                 };
                 response.render('home/create', options);
@@ -99,12 +90,13 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
+                next(error);
             });
     }
 
     // when the user enters in user information,
     // a user should be added to the data store
-    this.createPost = function(request, response) {
+    this.createPost = function(request, response, next) {
         async.waterfall([
             // create and store the user on the database
             function (callback) {
@@ -120,15 +112,13 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
-                if (error) {
-                    // indicate that an error occurred
-                }
+                next(error);
             });
     }
 
     // when the user wants to edit a user,
     // they should be allowed to edit fields
-    this.edit = function(request, response) {
+    this.edit = function(request, response, next) {
         async.waterfall([
             // retrieve the user information from the database
             function (callback) {
@@ -143,7 +133,6 @@ function HomeController(dependencies) {
                     return callback('More the one user was found with the given ID.');
                 }
                 var options = {
-                    layout: 'layout',
                     locals: { user: users[0] }
                 };
                 response.render('home/edit', options);
@@ -151,15 +140,13 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
-                if (error) {
-                    // indicate that an error occurred
-                }
+                next(error);
             });
     }
     
     // when the user submits their changes,
     // the data store should be updated
-    this.editPost = function(request, response) {
+    this.editPost = function(request, response, next) {
         async.waterfall([
             // update the user on the data store
             function (callback) {
@@ -177,9 +164,7 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
-                if (error) {
-                    // indicate that an error occurred
-                }
+                next(error);
             });
     }
 }

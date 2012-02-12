@@ -6,6 +6,20 @@ function Router(application) {
     // registers each route in the application
     this.registerRoutes = function(settings) {
         registerHome(application, settings);
+        
+        // handle bad URLs
+        application.get('/404', function(request, response) {
+            response.render('404'); // maybe pass request.url
+        });
+        // catch bad URLs
+        application.use(function(request, response) {
+            response.redirect('/404');
+        });
+        // catch errors
+        application.error(function(error, request, response, next) {
+            response.render('500', { layout: false, locals: { error: error } });
+            next(error); // let the middleware report the error
+        });
     }
 }
 

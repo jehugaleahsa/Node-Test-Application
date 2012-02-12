@@ -1,0 +1,19 @@
+.container
+    form.form-horizontal.create-user-frm(method='post', action='/home/edit')
+        .row
+            .span2 &nbsp;
+            .span8.page-header Update the user information
+            .span2
+        .row
+            .span2 &nbsp;
+            .span8
+                input(type='hidden', name='id', value='#{user._id}')
+                .control-group
+                    label.control-label(for='name') User Name
+                    .controls
+                        input.input(type='text', name='name', value='#{user.name}')
+                .form-actions
+                    button.btn.btn-primary Update
+                    | 
+                    a.btn(href='/home/index') Cancel
+            .span2
