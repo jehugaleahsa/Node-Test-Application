@@ -7,13 +7,13 @@ function HomeController(dependencies) {
     this.index = function(request, response, next) {
         async.waterfall([
             // build the view model
-            function (callback) { 
+            function(callback) { 
                 var builders = require('../view_management/home/index.js');
                 var builder = new builders.IndexBuilder(dependencies);
                 builder.build(callback);
             },
             // render the view
-            function (users, callback) {
+            function(users, callback) {
                 var options = {
                     locals: { users : users }
                 };
@@ -21,8 +21,10 @@ function HomeController(dependencies) {
                 callback(null);
             }
             ],
-            function (error) {
-                next(error);
+            function(error) {
+                if (error) { 
+                    next(error); 
+                }                
             });
     }
     
@@ -40,6 +42,7 @@ function HomeController(dependencies) {
             // render the view
             function (users, callback) {
                 if (users.length != 1) {
+                    console.log(users.length);
                     return callback('More the one user was found with the given ID.');
                 }
                 var options = {
@@ -50,7 +53,9 @@ function HomeController(dependencies) {
             }
         ],
         function (error) {
-            next(error);
+            if (error) { 
+                next(error); 
+            }  
         });
     }
 
@@ -73,7 +78,9 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
-                next(error);
+                if (error) { 
+                    next(error); 
+                }
             });
     }
     
@@ -90,7 +97,9 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
-                next(error);
+                if (error) { 
+                    next(error); 
+                }
             });
     }
 
@@ -112,7 +121,9 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
-                next(error);
+                if (error) { 
+                    next(error); 
+                }
             });
     }
 
@@ -128,19 +139,18 @@ function HomeController(dependencies) {
                 builder.build(userId, callback);
             },
             // render the view
-            function (users, callback) {
-                if (users.length != 1) {
-                    return callback('More the one user was found with the given ID.');
-                }
+            function (user, callback) {
                 var options = {
-                    locals: { user: users[0] }
+                    locals: { user: user }
                 };
                 response.render('home/edit', options);
                 return callback(null);
             }
             ],
             function (error) {
-                next(error);
+                if (error) { 
+                    next(error); 
+                }
             });
     }
     
@@ -151,20 +161,22 @@ function HomeController(dependencies) {
             // update the user on the data store
             function (callback) {
                 var user = {
-                    _id: request.body.id,
+                    id: request.body.id,
                     name: request.body.name
                 };
                 var managers = require('../management/home/edit.js');
                 var manager = new managers.Manager(dependencies);
                 manager.update(user, callback);
             },
-            function (callback) {
+            function (updateCount, callback) {
                 response.redirect('/home/index');
                 callback(null);
             }
             ],
             function (error) {
-                next(error);
+                if (error) { 
+                    next(error); 
+                }
             });
     }
 }

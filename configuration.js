@@ -30,11 +30,19 @@ function development(application, settings) {
     console.log('Configuring Node for development');
     var express = require('express');
     application.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+    
+    // mongo settings 
     settings['Mongo Host'] = '127.0.0.1';
     settings['Mongo Port'] = 27017;
     settings['Mongo Server Options'] = {};
     settings['Mongo Database Name'] = 'test';
     settings['Mongo Database Options'] = {};
+    
+    // MySQL settings
+    settings['MySql Host'] = 'localhost';
+    settings['MySql Port'] = 3306;
+    settings['MySql User'] = 'root';
+    settings['MySql Password'] = 'testing123';
 }
 
 // configures the application for the production environment

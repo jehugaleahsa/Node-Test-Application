@@ -1,12 +1,11 @@
+var repositories = require('../../repositories/home.js');
+
+// builds the view model needed by the index screen
 function IndexBuilder(dependencies) {
+    // builds the view model
     this.build = function(callback) {
-        var server = dependencies.mongo;
-        var database = server.database('test');
-        var collection = database.collection('user');
-        var filter = {};
-        var sort = { name: 'asc' };
-        collection.find(filter, sort, callback);
+        var repository = dependencies.repository;
+        repository.getUsers(callback);
     }
 }
-
 exports.IndexBuilder = IndexBuilder;

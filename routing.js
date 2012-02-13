@@ -25,8 +25,9 @@ function Router(application) {
 
 // registers the routes associated with the home controller
 function registerHome(application, settings) {
+    var repositories = require('./repositories/home.js');
     var dependencies = {
-        mongo: new mongo.MongoServer(settings)
+        repository: new repositories.HomeRepository(settings)
     };
     var controller = new homeController.HomeController(dependencies);
     application.get('/', controller.index);

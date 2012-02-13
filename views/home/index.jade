@@ -12,8 +12,8 @@
                 tr
                     td= user.name
                     td 
-                        a(href='/home/edit/#{user._id}') Edit
+                        a(href='/home/edit/#{user.id}') Edit
                     td 
-                        a(href='/home/remove/#{user._id}') Remove
+                        a(href='/home/remove/#{user.id}') Remove
     .row
         a.span12(href='/home/create') Create User

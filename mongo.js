@@ -25,11 +25,6 @@ function MongoServer(settings) {
         return proxy;
     }
     
-    this.objectId = function(id) {
-        var objectId = new mongo.ObjectID(id);
-        return objectId;
-    }
-    
     this._open = function(databaseName, callback) {
         if (databaseName in databases) {
             // grab a cached database
@@ -180,7 +175,7 @@ function MongoCollection(database, name) {
             function (callback) { database._open(name, callback); },
             // update the document
             function (collection, callback) {
-                var condition = { _id: new mongo.ObjectID(replacement._id) };
+                var condition = { _id: getObjectId(replacement._id) };
                 // clone the document, except the _id
                 var document = minus(replacement, { _id: 0 });
                 var options = { safe: true, multi: false, upsert: false };
@@ -226,3 +221,9 @@ function MongoCollection(database, name) {
 }
 
 exports.MongoServer = MongoServer;
+
+function getObjectId(id) {
+    var objectId = new mongo.ObjectID(id);
+    return objectId;
+}
+exports.getObjectId = getObjectId;

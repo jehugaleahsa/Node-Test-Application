@@ -1,6 +1,6 @@
 .container
     form(method='post', action='/home/remove')
-        input(type='hidden', name='id', value='#{user._id}')
+        input(type='hidden', name='id', value='#{user.id}')
         .row
             .span3 &nbsp;
             .span6.page-header.confirm Are you sure you want to remove #{user.name}?

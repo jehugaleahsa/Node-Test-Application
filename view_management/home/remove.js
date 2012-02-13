@@ -1,10 +1,7 @@
 function RemoveBuilder(dependencies) {
     this.build = function(userId, callback) {
-        var server = dependencies.mongo;
-        var database = server.database('test');
-        var collection = database.collection('user');
-        collection.find({_id: server.objectId(userId)}, callback);
+        var repository = dependencies.repository;
+        repository.getUser(userId, callback);
     }
 }
-
 exports.RemoveBuilder = RemoveBuilder;

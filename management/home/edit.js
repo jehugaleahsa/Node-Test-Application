@@ -6,22 +6,8 @@ function Manager(dependencies) {
     // user: the values of the user
     // callback(error): the callback to call when control returns from the data store
     this.update = function (user, callback) {
-        var server = dependencies.mongo;
-        var database = server.database('test');
-        var collection = database.collection('user');
-        async.waterfall([
-            // update the user
-            function (callback) {
-                collection.update(user, callback);
-            },
-            // do something with the count
-            function (count, callback) {
-                callback(null);
-            }
-            ],
-            function (error) {
-                callback(error);
-            });
+        var repository = dependencies.repository;
+        repository.update(user, callback);
     }
 }
 exports.Manager = Manager;
