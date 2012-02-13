@@ -43,8 +43,9 @@ function HomeRepository(settings) {
                 var server = new mongo.MongoServer(settings);
                 var database = server.database('test');
                 var collection = database.collection('user');
-                var dataObject = toDataObject(user);
-                collection.update(dataObject, callback);
+                var id = user.id;
+                var replacement = { name: user.name };
+                collection.update(id, replacement, callback);
             }
             ],
             function (error) {
@@ -62,7 +63,7 @@ function getUsersFiltered(settings, filter, callback) {
             var server = new mongo.MongoServer(settings);
             var database = server.database('test');
             var collection = database.collection('user');
-            var sort = { name: 'asc' };
+            var sort = [ [ 'name', 'asc' ] ];
             collection.find(filter, sort, callback);
         },
         // convert the results to user objects
@@ -87,12 +88,4 @@ function mapToUser(source, callback) {
         name: source.name
     };
     callback(null, user);
-}
-
-function toDataObject(user) {
-    var dataObject = {
-        _id:  user.id,
-        name: user.name
-    };
-    return dataObject;
 }

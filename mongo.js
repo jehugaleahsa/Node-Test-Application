@@ -104,11 +104,12 @@ function MongoDatabase(server, name) {
 function MongoCollection(database, name) {
     // finds the documents satisifying the given condition, passing them to the given callback
     // condition: the condition that the documents must satisfy
+    // sort: an array of sort conditions
     // callback(error, documents): the callback to pass the errors and returned documents to
     this.find = function(condition, sort, callback) {
         if (typeof callback === 'undefined') {
             callback = sort;
-            sort = {};
+            sort = [];
         }
         var result = null;
         async.waterfall([
@@ -116,8 +117,7 @@ function MongoCollection(database, name) {
             function (callback) { database._open(name, callback); },
             // retrieve the documents
             function (collection, callback) {
-                var sortOptions = getSortOptions(sort);
-                var options = { sort: sortOptions };
+                var options = { sort: sort };
                 var cursor = collection.find(condition, options);
                 cursor.toArray(callback);
             },
@@ -131,15 +131,6 @@ function MongoCollection(database, name) {
             function (error) {
                 callback(error, result);
             });
-    }
-    
-    function getSortOptions(sort) {
-        var sortOptions = [];
-        for (var field in sort) {
-            var sortOption = [field, sort[field]];
-            sortOptions.push(sortOption);
-        }
-        return sortOptions;
     }
     
     // inserts the given document
@@ -166,20 +157,20 @@ function MongoCollection(database, name) {
     }
     
     // updates the documents satisfying the condition by replacing it
-    // replacement: the object to replace the matching documents with, including its _id field.
+    // id: the ID of the value to update
+    // replacement: the replacement values, excluding its ID field.
     // callback(error): the callback to pass the errors to
-    this.update = function(replacement, callback) {
+    this.update = function(id, replacement, callback) {
         var affected = 0;
         async.waterfall([
             // open the collection
             function (callback) { database._open(name, callback); },
             // update the document
             function (collection, callback) {
-                var condition = { _id: getObjectId(replacement._id) };
+                var condition = { _id: getObjectId(id) };
                 // clone the document, except the _id
-                var document = minus(replacement, { _id: 0 });
                 var options = { safe: true, multi: false, upsert: false };
-                collection.update(condition, document, options, callback);
+                collection.update(condition, replacement, options, callback);
             },
             function (count, callback) {
                 affected = count;
@@ -189,16 +180,6 @@ function MongoCollection(database, name) {
             function (error) {
                 callback(error, affected);
             });
-    }
-    
-    function minus(document, exclude) {
-        var result = {};
-        for (var key in document) {
-            if (!(key in exclude)) {
-                result[key] = document[key];
-            }
-        }
-        return result;
     }
 
     // removes the documents satisfying the given condition
