@@ -22,7 +22,7 @@ function MySqlClient(settings) {
     // performs an insert on the database
     // callback(error, id, rowsAffected)
     this.insert = function(statement, parameters, callback) {
-        client.query(query, parameters, function(error, information) {
+        client.query(statement, parameters, function(error, information) {
             if (error) {
                 callback(error, null, 0);
             } else {
@@ -34,7 +34,7 @@ function MySqlClient(settings) {
     // performs an update on the database
     // callback(error, rowsAffected)
     this.update = function(statement, parameters, callback) {
-        client.query(query, parameters, function(error, information) {
+        client.query(statement, parameters, function(error, information) {
             if (error) {
                 callback(error, 0);
             } else {
@@ -45,8 +45,8 @@ function MySqlClient(settings) {
     
     // performs a delete on a database
     // callback(error, rowsAffected)
-    this.delete = function(statement, parameters, callback) {
-        client.query(query, parameters, function(error, information) {
+    this.remove = function(statement, parameters, callback) {
+        client.query(statement, parameters, function(error, information) {
             if (error) {
                 callback(error, 0);
             } else {

@@ -25,11 +25,8 @@ function Router(application) {
 
 // registers the routes associated with the home controller
 function registerHome(application, settings) {
-    var repositories = require('./repositories/home.js');
-    var dependencies = {
-        repository: new repositories.HomeRepository(settings)
-    };
-    var controller = new homeController.HomeController(dependencies);
+    var manager = new HomeResourceManager(settings);
+    var controller = new homeController.HomeController(manager);
     application.get('/', controller.index);
     application.get('/home/index', controller.index);
     application.get('/home/remove/:id', controller.remove);
@@ -38,6 +35,23 @@ function registerHome(application, settings) {
     application.post('/home/create', controller.createPost);
     application.get('/home/edit/:id', controller.edit);
     application.post('/home/edit', controller.editPost);
+}
+
+function HomeResourceManager(settings) {        
+    var repository = null;
+    
+    this.getDependencies = function() {
+        var repositories = require('./repositories/home.js');
+        repository = new repositories.HomeRepository(settings);
+        var dependencies = { repository: repository };
+        return dependencies;
+    }
+    
+    this.release = function() {
+        if (repository) {
+            repository.close();
+        }
+    }
 }
 
 exports.Router = Router;

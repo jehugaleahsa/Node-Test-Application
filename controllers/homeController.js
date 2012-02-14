@@ -1,10 +1,11 @@
 var async = require('async');
 
 // renders views and performs business logic associated with the home pages
-function HomeController(dependencies) {
+function HomeController(manager) {
     // when the user navigates to the home page,
     // they should be shown all of the current users
     this.index = function(request, response, next) {
+        var dependencies = manager.getDependencies();
         async.waterfall([
             // build the view model
             function(callback) { 
@@ -22,7 +23,8 @@ function HomeController(dependencies) {
             }
             ],
             function(error) {
-                if (error) { 
+                manager.release();
+                if (error) {
                     next(error); 
                 }                
             });
@@ -31,6 +33,7 @@ function HomeController(dependencies) {
     // when the user wants to remove a user,
     // they should be prompted to confirm their decision
     this.remove = function(request, response, next) {
+        var dependencies = manager.getDependencies();
         async.waterfall([
             // build the view model
             function (callback) {
@@ -49,6 +52,7 @@ function HomeController(dependencies) {
             }
         ],
         function (error) {
+            manager.release();
             if (error) { 
                 next(error); 
             }
@@ -59,6 +63,7 @@ function HomeController(dependencies) {
     // the user should be removed from the data store
     // and the user should be redirected to the index screen
     this.removePost = function(request, response, next) {
+        var dependencies = manager.getDependencies();
         async.waterfall([
             // remove the user from the data store
             function (callback) {
@@ -74,6 +79,7 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
+                manager.release();
                 if (error) { 
                     next(error); 
                 }
@@ -102,6 +108,7 @@ function HomeController(dependencies) {
     // when the user enters in user information,
     // a user should be added to the data store
     this.createPost = function(request, response, next) {
+        var dependencies = manager.getDependencies();
         async.waterfall([
             // create and store the user on the database
             function (callback) {
@@ -117,6 +124,7 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
+                manager.release();
                 if (error) { 
                     next(error); 
                 }
@@ -126,6 +134,7 @@ function HomeController(dependencies) {
     // when the user wants to edit a user,
     // they should be allowed to edit fields
     this.edit = function(request, response, next) {
+        var dependencies = manager.getDependencies();
         async.waterfall([
             // retrieve the user information from the database
             function (callback) {
@@ -144,6 +153,7 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
+                manager.release();
                 if (error) { 
                     next(error); 
                 }
@@ -153,6 +163,7 @@ function HomeController(dependencies) {
     // when the user submits their changes,
     // the data store should be updated
     this.editPost = function(request, response, next) {
+        var dependencies = manager.getDependencies();
         async.waterfall([
             // update the user on the data store
             function (callback) {
@@ -170,6 +181,7 @@ function HomeController(dependencies) {
             }
             ],
             function (error) {
+                manager.release();
                 if (error) { 
                     next(error); 
                 }

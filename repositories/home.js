@@ -1,11 +1,9 @@
-var mongo = require('../mongo.js');
+var mysql = require('../mysql.js');
 var async = require('async');
 
 // provides access to the data needed by the home actions
 function HomeRepository(settings) {
-    var server = new mongo.MongoServer(settings);
-    var database = server.database('test');
-    var collection = database.collection('user');
+    var client = new mysql.MySqlClient(settings);
 
     // gets the user with the given ID
     // callback(error, user)
@@ -13,16 +11,18 @@ function HomeRepository(settings) {
         var user = null;
         async.waterfall([
             function (callback) {
-                var filter = { _id: mongo.getObjectId(id) };
-                getUsersFiltered(collection, filter, callback);
+                var query = 'SELECT id, name FROM test.user WHERE id = ?';
+                var parameters = [+id];
+                client.select(query, parameters, callback);
             },
-            function (users, callback) {
-                if (users.length == 0) {
+            function (rows, columns, callback) {
+                if (rows.length == 0) {
                     return callback(new Error('A user could not be found with the given ID.'));
-                } else if (users.length > 1) {
+                } else if (rows.length > 1) {
                     return callback(new Error('More than one user was found with the given ID.'));
                 }
-                user = users[0];
+                var row = rows[0];
+                user = { id: row.id, name: row.name };
                 return callback(null);
             }
             ],
@@ -34,8 +34,24 @@ function HomeRepository(settings) {
     // gets all of the users in the database, ordered by name
     // callback(error, users)
     this.getUsers = function (callback) {
-        var filter = {};
-        getUsersFiltered(collection, filter, callback);
+        var users = null;
+        async.waterfall([
+            function (callback) {
+                var query = 'SELECT id, name FROM test.user ORDER BY name';
+                var parameters = [];
+                client.select(query, parameters, callback);
+            },
+            function (rows, columns, callback) {
+                async.map(rows, mapToUser, callback);
+            },
+            function (results, callback) {
+                users = results;
+                callback(null);
+            }
+            ],
+            function (error) {
+                callback(error, users);
+            });
     }
 
     // updates the user on the database
@@ -45,9 +61,9 @@ function HomeRepository(settings) {
         var count = 0;
         async.waterfall([
             function (callback) {
-                var id = user.id;
-                var replacement = { name: user.name };
-                collection.update(id, replacement, callback);
+                var statement = 'UPDATE test.user SET name = ? WHERE id = ?';
+                var parameters = [user.name, +user.id];
+                client.update(statement, parameters, callback);
             },
             function (affected, callback) {
                 count = affected;
@@ -66,11 +82,13 @@ function HomeRepository(settings) {
         var count = 0;
         async.waterfall([
             function (callback) {
-                collection.insert(user, callback);
+                var statement = 'INSERT INTO test.user (name) VALUES(?)';
+                var parameters = [user.name];
+                client.insert(statement, parameters, callback);
             },
-            function (inserted, callback) {
-                user.id = inserted._id;
-                count = 1;
+            function (id, affected, callback) {
+                user.id = id;
+                count = affected;
                 callback(null);
             }
             ],
@@ -84,8 +102,9 @@ function HomeRepository(settings) {
         var count = 0;
         async.waterfall([
             function (callback) {
-                var condition = { _id: mongo.getObjectId(userId) };
-                collection.remove(condition, callback);
+                var statement = 'DELETE FROM test.user WHERE id = ?';
+                var parameters = [+userId];
+                client.remove(statement, parameters, callback);
             },
             function (affected, error) {
                 count = affected;
@@ -96,36 +115,17 @@ function HomeRepository(settings) {
                 callback(error, count);
             });
     }
+
+    // closes any resources held by the repository
+    this.close = function () {
+        client.close();
+    }
 }
 exports.HomeRepository = HomeRepository;
 
-function getUsersFiltered(collection, filter, callback) {
-    var users = null;
-    async.waterfall([
-        // grab the results from the database
-        function (callback) {
-            var sort = [ [ 'name', 'asc' ] ];
-            collection.find(filter, sort, callback);
-        },
-        // convert the results to user objects
-        function (results, callback) {
-            async.map(results, mapToUser, callback);
-        },
-        // store the users
-        function (results, callback) {
-            users = results;
-            callback(null);
-        }
-        ],
-        function (error) {
-            // return the users
-            callback(error, users);
-        });
-}
-
 function mapToUser(source, callback) {
     var user = {
-        id:   source._id,
+        id:   source.id,
         name: source.name
     };
     callback(null, user);
