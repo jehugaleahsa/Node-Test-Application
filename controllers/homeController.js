@@ -40,22 +40,18 @@ function HomeController(dependencies) {
                 builder.build(userId, callback);
             },
             // render the view
-            function (users, callback) {
-                if (users.length != 1) {
-                    console.log(users.length);
-                    return callback('More the one user was found with the given ID.');
-                }
+            function (user, callback) {
                 var options = {
-                    locals: { user: users[0] }
+                    locals: { user: user }
                 };
                 response.render('home/remove', options);
-                return callback(null);
+                callback(null);
             }
         ],
         function (error) {
             if (error) { 
                 next(error); 
-            }  
+            }
         });
     }
 
