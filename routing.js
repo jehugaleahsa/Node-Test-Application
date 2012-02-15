@@ -41,8 +41,10 @@ function HomeResourceManager(settings) {
     var repository = null;
     
     this.getDependencies = function() {
-        var repositories = require('./repositories/home.js');
-        repository = new repositories.HomeRepository(settings);
+        if (!repository) {
+            var repositories = require('./repositories/home.js');
+            repository = new repositories.HomeRepository(settings);
+        }
         var dependencies = { repository: repository };
         return dependencies;
     }
