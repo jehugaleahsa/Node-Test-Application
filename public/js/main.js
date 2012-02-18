@@ -23,14 +23,15 @@ $(function() {
     var templates = {};
     $('#create-user-btn').on('click', function (e) {
         if ('create-user' in templates) {
-            $('#add-user-modal').modal('show');
+            var $modal = templates['create-user'];
+            $modal.modal('show');
         } else {
             $.ajax({ url: '/templates/create-user-modal.html', type: 'GET' })
              .success(function (data) {
-                $('.templates').append(data);
-                templates['create-user'] = true;
-                prepareCreateUserTemplate();
-                $('#add-user-modal').modal('show');
+                var $modal = $(data);
+                templates['create-user'] = $modal;
+                setupCreateUserModal($modal);
+                $modal.modal('show');
              });
         }
     });
@@ -43,20 +44,22 @@ $(function() {
     $('.remove-user-btn').on('click', function (e) {
         var userId = $(this).attr('data-user-id');
         if ('remove-user' in templates) {
-            populateRemoveTemplate(userId);
+            var templator = templates['remove-user'];
+            populateRemoveTemplate(templator, userId);
         } else {
             $.ajax({ url: '/templates/remove-user-modal.html', type: 'GET' })
              .success(function (data) {
-                $('.templates').append(data);
-                templates['remove-user'] = true;
-                populateRemoveTemplate(userId);
+                var templator = Handlebars.compile(data);
+                templates['remove-user'] = templator;
+                populateRemoveTemplate(templator, userId);
              });
         }
     });
 });
 
-function prepareCreateUserTemplate() {
-    var $form = $('#create-user-frm');
+function setupCreateUserModal($modal) {
+    var $form = $modal.find('#create-user-frm');
+    
     // validation
     $form.bs_validate({
         rules: {
@@ -65,24 +68,22 @@ function prepareCreateUserTemplate() {
     });
     
     // submission
-    $('#create-user-submit-btn').on('click', function (e) {
+    $modal.find('#create-user-submit-btn').on('click', function (e) {
         if ($form.valid()) {
             $.ajax({ url: '/user', type: 'POST', data: $form.serialize(), dataType: 'JSON' })
              .success(function(user) {
                 // TODO - add row to table 
              });
-            $('#add-user-modal').modal('hide');
+            $modal.modal('hide');
         }
     });
 }
 
-function populateRemoveTemplate(userId) {
-    var $template = $('#remove-user-modal');
+function populateRemoveTemplate(templator, userId) {
     var url = ['/user/', userId, '/details'].join('');
     $.ajax({ url: url, type: 'POST', dataType: 'JSON' })
      .success(function (user) {
-        var template = Handlebars.compile($template.get(0).outerHTML);
-        var $modal = $(template(user));
+        var $modal = $(templator(user));
         $modal.find('#remove-user-submit-btn').on('click', function (e) {
             var data = $modal.find('#remove-user-frm').serialize();
             $.ajax({ url: '/user', type: 'DELETE', data: data, dataType: 'JSON' });
