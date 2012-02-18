@@ -1,0 +1,16 @@
+﻿<div id="remove-user-modal" class="modal fade">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>Remove User</h3>
+    </div>
+    <div class="modal-body">
+        <form id="remove-user-frm" class="form-horizontal" method="delete" action="/user">
+            <input type="hidden" name="id" value="{{id}}" />
+            <div class="confirm">Are you sure you want to remove {{name}}?</div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a id="remove-user-submit-btn" class="btn btn-warning">Yes</a>
+        <a class="btn" data-dismiss="modal">No</a>
+    </div>
+</div>

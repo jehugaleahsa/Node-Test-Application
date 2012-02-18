@@ -9,7 +9,7 @@ function UserController(manager) {
         async.waterfall([
             // build the view model
             function(callback) { 
-                var builders = require('../view_management/user/index.js');
+                var builders = require('../builders/user/index.js');
                 var builder = new builders.IndexBuilder(dependencies);
                 builder.build(callback);
             },
@@ -26,8 +26,30 @@ function UserController(manager) {
                 manager.release();
                 if (error) {
                     next(error); 
-                }                
+                }
             });
+    }
+    
+    // gets the details for the user with the given ID.
+    this.getDetails = function(request, response, next) {
+        var dependencies = manager.getDependencies();
+        async.waterfall([
+            function (callback) {
+                var repository = dependencies.repository;
+                var userId = request.params.id;
+                repository.getUser(userId, callback);
+            },
+            function (user, callback) {
+                response.json(user);
+                callback(null);
+            }
+            ]),
+            function (error) {
+                manager.release();
+                if (error) {
+                    response.json(500);
+                }
+            };
     }
     
     // when the user wants to remove a user,
@@ -37,7 +59,7 @@ function UserController(manager) {
         async.waterfall([
             // build the view model
             function (callback) {
-                var builders = require('../view_management/user/remove.js');
+                var builders = require('../builders/user/remove.js');
                 var builder = new builders.RemoveBuilder(dependencies);
                 var userId = request.params.id;
                 builder.build(userId, callback);
@@ -74,14 +96,14 @@ function UserController(manager) {
             },
             // redirect the user to the index
             function (callback) { 
-                response.redirect('/user/index');
+                response.json(200);
                 callback(null);
             }
             ],
             function (error) {
                 manager.release();
                 if (error) { 
-                    next(error); 
+                    response.json(500);
                 }
             });
     }
@@ -119,14 +141,14 @@ function UserController(manager) {
             },
             // redirect the user to the index
             function (user, callback) {
-                response.redirect('/user/index');
+                response.json(user);
                 callback(null);
             }
             ],
             function (error) {
                 manager.release();
-                if (error) { 
-                    next(error); 
+                if (error) {
+                    response.json(500);
                 }
             });
     }
@@ -138,7 +160,7 @@ function UserController(manager) {
         async.waterfall([
             // retrieve the user information from the database
             function (callback) {
-                var builders = require('../view_management/user/edit.js');
+                var builders = require('../builders/user/edit.js');
                 var builder = new builders.EditBuilder(dependencies);
                 var userId = request.params.id;
                 builder.build(userId, callback);
@@ -163,27 +185,27 @@ function UserController(manager) {
     // when the user submits their changes,
     // the data store should be updated
     this.editPost = function(request, response, next) {
+        var user = {
+            id: request.body.id,
+            name: request.body.name
+        };
         var dependencies = manager.getDependencies();
         async.waterfall([
             // update the user on the data store
             function (callback) {
-                var user = {
-                    id: request.body.id,
-                    name: request.body.name
-                };
                 var managers = require('../management/user/edit.js');
                 var manager = new managers.Manager(dependencies);
                 manager.update(user, callback);
             },
             function (updateCount, callback) {
-                response.redirect('/user/index');
+                response.json(user);
                 callback(null);
             }
             ],
             function (error) {
                 manager.release();
                 if (error) { 
-                    next(error); 
+                    response.json(500);
                 }
             });
     }

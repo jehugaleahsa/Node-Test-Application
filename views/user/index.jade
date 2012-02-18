@@ -1,19 +1,20 @@
+.templates
 .container
     h1 Users
     .row
-        table.table-striped.table-bordered.span12
+        table.table-striped.table-bordered.span12(id='user-table')
             thead
                 tr
                     th Name
                     th
                     th
-            tbody.user-container
-            each user in users
-                tr
-                    td= user.name
-                    td 
-                        a(href='/user/edit/#{user.id}') Edit
-                    td 
-                        a(href='/user/remove/#{user.id}') Remove
+            tbody
+                each user in users
+                    tr
+                        td= user.name
+                        td 
+                            a.btn.btn-primary.btn-small.edit-user-btn(data-user-id='#{user.id}') Edit
+                        td 
+                            a.btn.btn-primary.btn-small.remove-user-btn(data-user-id='#{user.id}') Remove
     .row
-        a.span12(href='/user/create') Create User
+        a.span2.btn.btn-primary(id='create-user-btn') Create User

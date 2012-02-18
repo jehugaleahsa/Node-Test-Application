@@ -9,7 +9,8 @@ function Router(application) {
         
         // handle bad URLs
         application.get('/404', function(request, response) {
-            response.render('404'); // maybe pass request.url
+            var options = { layout: false };
+            response.render('404', options); // maybe pass request.url
         });
         // catch bad URLs
         application.use(function(request, response) {
@@ -17,7 +18,11 @@ function Router(application) {
         });
         // catch errors
         application.error(function(error, request, response, next) {
-            response.render('500', { layout: false, locals: { error: error } });
+            var options = {
+                layout: false,
+                locals: { error: error }
+            };
+            response.render('500', options);
             next(error); // let the middleware report the error
         });
     }
@@ -28,13 +33,14 @@ function registerUser(application, settings) {
     var manager = new UserResourceManager(settings);
     var controller = new userController.UserController(manager);
     application.get('/', controller.index);
-    application.get('/user/index', controller.index);
-    application.get('/user/remove/:id', controller.remove);
-    application.post('/user/remove', controller.removePost);
+    application.get('/user', controller.index);
+    application.post('/user/:id/details', controller.getDetails);
+    application.get('/user/:id/remove', controller.remove);
+    application.del('/user', controller.removePost);
     application.get('/user/create', controller.create);
-    application.post('/user/create', controller.createPost);
-    application.get('/user/edit/:id', controller.edit);
-    application.post('/user/edit', controller.editPost);
+    application.post('/user', controller.createPost);
+    application.get('/user/:id/edit', controller.edit);
+    application.put('/user', controller.editPost);
 }
 
 function UserResourceManager(settings) {        
@@ -43,7 +49,7 @@ function UserResourceManager(settings) {
     this.getDependencies = function() {
         if (!repository) {
             var repositories = require('./repositories/user.js');
-            repository = new repositories.HomeRepository(settings);
+            repository = new repositories.HomeRepository(settings); // set cache
         }
         var dependencies = { repository: repository };
         return dependencies;
@@ -52,6 +58,7 @@ function UserResourceManager(settings) {
     this.release = function() {
         if (repository) {
             repository.close();
+            repository = null; // clear cache
         }
     }
 }

@@ -1,5 +1,5 @@
 .container
-    form.form-horizontal.create-user-frm(method='post', action='/user/edit')
+    form.form-horizontal.create-user-frm(method='put', action='/user')
         .row
             .span2 &nbsp;
             .span8.page-header Update the user information
@@ -15,5 +15,5 @@
                 .form-actions
                     button.btn.btn-primary Update
                     | 
-                    a.btn(href='/user/index') Cancel
+                    a.btn(href='/user') Cancel
             .span2

@@ -1,0 +1,20 @@
+﻿<div id="add-user-modal" class="modal fade">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>Create User</h3>
+    </div>
+    <div class="modal-body">
+        <form id="create-user-frm" class="form-horizontal" method="post" action="/user/create">
+            <div class="control-group">
+                <label class="control-label" for="name">User Name</label>
+                <div class="controls">
+                    <input class="input" type="text" name="name" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a id="create-user-submit-btn" href="#" class="btn btn-primary">Create</a>
+        <a class="btn" data-dismiss="modal">Close</a>
+    </div>
+</div>
