@@ -1,5 +1,5 @@
 .container
-    form(method='post', action='/home/remove')
+    form(method='post', action='/user/remove')
         input(type='hidden', name='id', value='#{user.id}')
         .row
             .span3 &nbsp;
@@ -10,5 +10,5 @@
             .span6.form-actions
                 button.btn.btn-warning Yes
                 | 
-                a.btn(href='/home/index') No
+                a.btn(href='/user/index') No
             .span3

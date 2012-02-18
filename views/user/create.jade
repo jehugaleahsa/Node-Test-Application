@@ -1,0 +1,18 @@
+.container
+    .row
+        .span2 &nbsp;
+        .span8.page-header Enter the user information
+        .span2
+    .row
+        .span2 &nbsp;
+        .span8
+            form.form-horizontal.create-user-frm(method='post', action='/user/create')
+                .control-group
+                    label.control-label(for='name') User Name
+                    .controls
+                        input.input(type='text', name='name')
+                .form-actions
+                    button.btn.btn-primary Create
+                    | 
+                    a.btn(href='/user/index') Cancel
+        .span2

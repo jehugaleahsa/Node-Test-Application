@@ -1,4 +1,4 @@
-var repositories = require('../../repositories/home.js');
+var repositories = require('../../repositories/user.js');
 
 // builds the view model needed by the index screen
 function IndexBuilder(dependencies) {
