@@ -6,7 +6,9 @@ function Manager(dependencies) {
             return callback(new Error('Cannot create a user without a name.'));
         }
         var repository = dependencies.repository;
-        return repository.insert(user, callback);
+        repository.insert(user, function (error, affected) {
+            callback(error, user);
+        });
     }
 }
 exports.Manager = Manager;
